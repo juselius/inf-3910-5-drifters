@@ -1,14 +1,15 @@
 module Index
 
-open Thoth.Json
-open Thoth.Fetch
+open Elmish
+open Fable.Core
+open Fable.React.Props
 open Feliz
 open Feliz.Bulma
+open Thoth.Fetch
+open Thoth.Json
 open Leaflet
 open Fable.Core.JsInterop
-open Fable.Core
 open Shared
-open Fable.React.Props
 
 module RL = ReactLeaflet
 
@@ -28,11 +29,14 @@ let getGrid dispatch =
         ()
     } |> Promise.start
 
-let init () : Model  = ()
+let init () : Model * Cmd<Msg> =
+    let model = ()
+    let cmd = Cmd.none
+    model, cmd
 
-let update (model: Model) (msg: Msg) : Model=
+let update (msg: Msg) (model: Model) : Model * Cmd<Msg> =
     match msg with
-    | Hello -> model
+    | Hello ->  model, Cmd.none
 
 let wmtsSource layer =
     "http://opencache.statkart.no/gatekeeper/gk/gk.open_wmts?" +
@@ -71,7 +75,7 @@ let drawTriangle (a, b, c) =
         |]
     RL.polygon [
         RL.PolygonProps.Positions p
-        RL.PolygonProps.Weight 1.0
+        RL.PolygonProps.Weight 1.
     ] []
 
 let drawPolyline (track: (float * float) array) =
@@ -126,15 +130,3 @@ let view (model: Model) (dispatch: Msg -> unit) =
             ] ]
         ]
     ]
-
-let app =
-    Fable.React.FunctionComponent.Of (fun () ->
-        let initialModel = init ()
-        let model, dispatch = React.useReducer(update, initialModel)
-
-        React.useEffect ((fun _ -> ()), [||])
-
-        Html.div [
-            view model dispatch
-        ]
-    )
